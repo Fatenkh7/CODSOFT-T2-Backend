@@ -19,10 +19,12 @@ const productSchema = new Schema(
             type: Number,
             required: [true, "the price cann't be empty!"],
             min: 0.01,
+            trim: true,
         },
         stockQuantity: {
             type: Number,
             required: true,
+            trim: true,
             validate: {
                 validator: Number.isInteger,
                 message: "Stock quantity must be an integer",

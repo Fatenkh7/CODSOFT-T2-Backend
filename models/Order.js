@@ -18,20 +18,24 @@ const OrderSchema = new Schema(
                 quantity: {
                     type: Number,
                     required: true,
+                    trim: true,
                     min: 1,
                 },
             },
         ],
         shippingAddress: {
             type: String,
-            required: [true,"Please the adress cann't be empty!"]
+            required: [true, "Please the adress cann't be empty!"],
+            trim: true,
         },
         paymentMethod: {
             type: String,
+            trim: true,
         },
         totalPrice: {
             type: Number,
             required: true,
+            trim: true,
             min: 0.01,
         },
     }, {

@@ -34,6 +34,7 @@ const AdminSchema = new Schema(
         password: {
             type: String,
             required: true,
+            trim: true,
             minLength: [8, "the password is too short!"],
             maxLength: [80, "the password is too long!"],
         },

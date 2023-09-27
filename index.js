@@ -3,18 +3,14 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/connect.js";
+import userRoute from "./routes/user.js"
 
 dotenv.config()
 const PORT = process.env.PORT || 5500
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-    optionsSuccessStatus: 200,
-    origin: '*',
-    credentials: true,
-    exposedHeaders: ['Authorization'],
-}))
+app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 
 if (process.env.NODE_ENV === "development") {
@@ -25,6 +21,7 @@ app.get("/", (req, res) => {
     res.send("API is running...");
 });
 
+app.use("/api/users", userRoute)
 
 // error handler
 app.use(function (err, req, res, next) {

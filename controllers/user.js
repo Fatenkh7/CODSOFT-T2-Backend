@@ -81,9 +81,15 @@ export async function create(req, res) {
             res.status(201).send({ status: 201, message: "create succeflully", data: newUser })
         }
     } catch (err) {
-        if (err.code === 11000 && err.keyPattern.email) {
-            // Duplicate key error due to a unique constraint on the 'email' field
-            res.status(400).send({ status: 400, message: "Email address is already use it" });
+        if (err.code === 11000) {
+            // Duplicate key error
+            if (err.keyPattern.email) {
+                res.status(400).send({ status: 400, message: "Email address is already in use" });
+            } else if (err.keyPattern.phone) {
+                res.status(400).send({ status: 400, message: "Phone number is already taken" });
+            } else {
+                res.status(400).send({ status: 400, message: "Duplicate key error", error: err.message });
+            }
         } else if (err.name === "ValidationError") {
             // Mongoose validation error occurred
             const validationErrors = {};
@@ -135,9 +141,15 @@ export async function update(req, res) {
             });
         }
     } catch (err) {
-        if (err.code === 11000 && err.keyPattern.email) {
-            // Duplicate key error due to a unique constraint on the 'email' field
-            res.status(400).send({ status: 400, message: "Email address is already in use" });
+        if (err.code === 11000) {
+            // Duplicate key error
+            if (err.keyPattern.email) {
+                res.status(400).send({ status: 400, message: "Email address is already in use" });
+            } else if (err.keyPattern.phone) {
+                res.status(400).send({ status: 400, message: "Phone number is already taken" });
+            } else {
+                res.status(400).send({ status: 400, message: "Duplicate key error", error: err.message });
+            }
         } else if (err.name === "ValidationError") {
             // Mongoose validation error occurred
             const validationErrors = {};

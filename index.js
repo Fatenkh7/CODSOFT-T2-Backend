@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/connect.js";
-import userRoute from "./routes/user.js"
+import userRoute from "./routes/user.js";
+import adminRoute from "./routes/admin.js"
 
 dotenv.config()
 const PORT = process.env.PORT || 5500
@@ -21,7 +22,8 @@ app.get("/", (req, res) => {
     res.send("API is running...");
 });
 
-app.use("/api/users", userRoute)
+app.use("/api/users", userRoute);
+app.use("/api/admins", adminRoute)
 
 // error handler
 app.use(function (err, req, res, next) {

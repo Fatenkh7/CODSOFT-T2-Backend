@@ -1,0 +1,37 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "description": "task 2 level 3 e-commerce website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fatenkh7/CODSOFT-T2-Backend.git"
+  },
+  "author": "Faten khoder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fatenkh7/CODSOFT-T2-Backend/issues"
+  },
+  "homepage": "https://github.com/Fatenkh7/CODSOFT-T2-Backend#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.1.0",
+    "mongoose": "^7.5.3",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.0.1",
+    "salt": "^0.5.5"
+  },
+  "type": "module",
+  "devDependencies": {
+    "morgan": "^1.10.0"
+  }
+}

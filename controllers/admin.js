@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 /**
  * @description Retrieve all admins
- * @route GET /api/admins
+ * @route GET /api/admin
  * @access Public
  * @returns {Object[]} - An array containing all the admins.
  */
@@ -24,7 +24,7 @@ export async function getAll(req, res) {
 
 /**
  * @description Retrieve an admin by ID
- * @route GET /api/admins/:ID
+ * @route GET /api/admin/:ID
  * @access Public
  * @param {string} ID - The unique identifier of the admins.
  * @returns {Object|null} - The user data if found, or null if not found.
@@ -45,7 +45,7 @@ export async function getById(req, res) {
 
 /**
  * @description Create a new admin
- * @route POST /api/admins/add
+ * @route POST /api/admin/add
  * @access Public
  * @param {Object} req.body - The request body containing admin information.
  * @param {string} req.body.firstName - First name of the admin.
@@ -102,7 +102,7 @@ export async function create(req, res) {
 
 /**
  * @description Update an admin by ID
- * @route PUT /api/admins/:ID
+ * @route PUT /api/admin/:ID
  * @access Public
  * @param {string} ID - The unique identifier of the admin.
  * @param {Object} req.body - The request body containing admin information for updating.
@@ -164,7 +164,7 @@ export async function update(req, res) {
 
 /**
  * @description Delete a admin by ID
- * @route DELETE /api/admins/:ID
+ * @route DELETE /api/admin/:ID
  * @access Public
  * @param {string} ID - The unique identifier of the admin to be deleted.
  * @returns {Object|null} - A success message if the admin is deleted, or null if the user is not found.

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 /**
  * @description Retrieve all users
- * @route GET /api/users
+ * @route GET /api/user
  * @access Public
  * @returns {Object[]} - An array containing all the users.
  */
@@ -22,9 +22,10 @@ export async function getAll(req, res) {
     }
 }
 
+
 /**
  * @description Retrieve a user by ID
- * @route GET /api/users/:ID
+ * @route GET /api/user/:ID
  * @access Public
  * @param {string} ID - The unique identifier of the user.
  * @returns {Object|null} - The user data if found, or null if not found.
@@ -45,7 +46,7 @@ export async function getById(req, res) {
 
 /**
  * @description Create a new user
- * @route POST /api/users/add
+ * @route POST /api/user/add
  * @access Public
  * @param {Object} req.body - The request body containing user information.
  * @param {string} req.body.firstName - First name of the user.
@@ -109,7 +110,7 @@ export async function create(req, res) {
 
 /**
  * @description Update a user by ID
- * @route PUT /api/users/:ID
+ * @route PUT /api/user/:ID
  * @access Public
  * @param {string} ID - The unique identifier of the user.
  * @param {Object} req.body - The request body containing user information for updating.
@@ -170,7 +171,7 @@ export async function update(req, res) {
 
 /**
  * @description Delete a user by ID
- * @route DELETE /api/users/:ID
+ * @route DELETE /api/user/:ID
  * @access Public
  * @param {string} ID - The unique identifier of the user to be deleted.
  * @returns {Object|null} - A success message if the user is deleted, or null if the user is not found.

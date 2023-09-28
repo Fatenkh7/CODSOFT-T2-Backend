@@ -6,6 +6,7 @@ import connectDB from "./config/connect.js";
 import userRoute from "./routes/user.js";
 import adminRoute from "./routes/admin.js"
 import inboxRoute from "./routes/inbox.js"
+import categoryRoute from "./routes/category.js"
 
 dotenv.config()
 const PORT = process.env.PORT || 5500
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoute);
 app.use("/api/admin", adminRoute)
 app.use("/api/inbox", inboxRoute)
+app.use("/api/category", categoryRoute)
 
 // error handler
 app.use(function (err, req, res, next) {

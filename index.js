@@ -8,6 +8,7 @@ import adminRoute from "./routes/admin.js"
 import inboxRoute from "./routes/inbox.js"
 import categoryRoute from "./routes/category.js"
 import productRoute from "./routes/product.js"
+import orderRoute from "./routes/order.js"
 
 dotenv.config()
 const PORT = process.env.PORT || 5500
@@ -30,6 +31,7 @@ app.use("/api/admin", adminRoute)
 app.use("/api/inbox", inboxRoute)
 app.use("/api/category", categoryRoute)
 app.use("/api/product", productRoute)
+app.use("/api/order", orderRoute)
 
 app.use("/uploads", express.static("./uploads"));
 // error handler

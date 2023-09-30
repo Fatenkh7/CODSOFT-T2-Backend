@@ -22,6 +22,7 @@ export async function getAll(req, res) {
     }
 }
 
+
 /**
  * @description Retrieve an admin by ID
  * @route GET /api/admin/:ID

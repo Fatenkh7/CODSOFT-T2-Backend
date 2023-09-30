@@ -131,7 +131,7 @@ export async function update(req, res) {
  * @route DELETE /api/category/:ID
  * @access Public
  * @param {string} ID - The unique identifier of the category to be deleted.
- * @returns {Object|null} - A success message if the category is deleted, or null if the inbox is not found.
+ * @returns {Object|null} - A success message if the category is deleted, or null if the product is not found.
  * @throws {Object} - Error object with details if an error occurs.
  */
 export async function deleteById(req, res) {

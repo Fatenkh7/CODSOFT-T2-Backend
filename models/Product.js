@@ -1,35 +1,32 @@
 import mongoose from "mongoose";
-const { Schema, model } = mongoose
+const { Schema, model } = mongoose;
+
 
 const productSchema = new Schema(
     {
         name: {
             type: String,
-            required: [true, "The name of the category cann't be empty"],
+            required: [true, "The name of the product can't be empty"],
             trim: true,
-            unique: [true, "This category is already excist it, please change it!"],
-            exists: true,
         },
         description: {
             type: String,
-            maxLength: [250, "the description is too long!"],
+            maxLength: [250, "The description is too long!"],
             trim: true,
         },
         price: {
             type: Number,
-            required: [true, "the price cann't be empty!"],
-            min: 0.01,
-            trim: true,
+            required: [true, "The price can't be empty!"],
+            min: [0.01, "Price cannot be less than 0.01"],
         },
         stockQuantity: {
             type: Number,
-            required: true,
-            trim: true,
+            required: [true, "The stock quantity is required"],
+            min: [0, "Stock quantity cannot be negative"],
             validate: {
                 validator: Number.isInteger,
-                message: "Stock quantity must be an integer",
-            },
-            min: [0, "Stock quantity cannot be negative"],
+                message: '{VALUE} is not an integer value'
+            }
         },
         image: {
             type: String,
@@ -40,10 +37,12 @@ const productSchema = new Schema(
             ref: "Category",
             required: true,
         },
-    }, {
-    collection: "Product",
-    timestamps: true
-});
+    },
+    {
+        collection: "Product",
+        timestamps: true,
+    }
+);
 
-const product = model('Product', productSchema)
+const product = model("Product", productSchema);
 export default product;

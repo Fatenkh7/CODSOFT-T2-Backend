@@ -31,6 +31,7 @@ app.use("/api/inbox", inboxRoute)
 app.use("/api/category", categoryRoute)
 app.use("/api/product", productRoute)
 
+app.use("/uploads", express.static("./uploads"));
 // error handler
 app.use(function (err, req, res, next) {
     console.log(err)

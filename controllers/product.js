@@ -1,5 +1,6 @@
 import productModel from "../models/Product.js";
 import mongoose from 'mongoose';
+import * as fs from 'fs';
 
 /**
  * @description Retrieve all the products
@@ -58,7 +59,7 @@ export async function getById(req, res) {
  * @throws {Object} - Error object with details if an error occurs.
  */
 export async function create(req, res) {
-    const { name, description, price, stockQuantity, image, idCategory } = req.body;
+    const { name, description, price, stockQuantity, idCategory } = req.body;
 
     try {
 
@@ -67,11 +68,11 @@ export async function create(req, res) {
             description,
             price,
             stockQuantity,
-            image,
+            image: req.imagePath,
             idCategory,
         });
 
-        if (!Number.isInteger(newProduct.stockQuantity) || typeof stockQuantity !== 'number') {
+        if (!Number.isInteger(newProduct.stockQuantity)) {
             res.status(400).send({ status: 400, error: "Validation Error", message: 'Stock quantity must be a Number' });
         } else {
             await newProduct.save();
@@ -102,45 +103,51 @@ export async function create(req, res) {
  * @throws {Object} - Error object with details if an error occurs.
  */
 export async function update(req, res) {
-    const { ID } = req.params;
-    const { name, description, price, stockQuantity, image, idCategory } = req.body;
-
-    // Check if stockQuantity is a number
-    if (isNaN(stockQuantity) || typeof stockQuantity !== 'number') {
-        return res.status(400).send({ status: 400, error: "Validation Error", message: 'Stock quantity must be a Number' });
-    }
-
     try {
-        const updateProduct = await productModel.findByIdAndUpdate(ID, {
-            name,
-            description,
-            price,
-            stockQuantity,
-            image,
-            idCategory,
-        }, { new: true });
+        const imageId = req.params.ID;
+        const { name, description, idCategory, price, stockQuantity } = req.body;
+        const imagePath = req.imagePath;
+
+        // Find the product post in the database based on the ID
+        const updateProduct = await productModel.findById(imageId);
 
         if (!updateProduct) {
-            return res.status(404).send({
-                error: true,
-                message: "Product not found",
-            });
+            return res.status(404).json({ message: "product not found" });
         }
 
-        const validationResult = updateProduct.validateSync();
+        // Get the previous image file path
+        const previousImageFilePath = updateProduct.image;
 
-        if (validationResult) {
-            const validationErrors = Object.values(validationResult.errors).map((error) => error.message);
-            res.status(400).send({ status: 400, message: "Validation error", errors: validationErrors });
+        // Check if the previous image file exists
+        if (fs.existsSync(previousImageFilePath)) {
+            // Delete the previous image
+            fs.unlinkSync(previousImageFilePath);
         } else {
-            res.status(200).send({
-                status: 200,
-                message: "Product data updated",
-                data: updateProduct,
-            });
+            console.log("Previous image file does not exist:", previousImageFilePath);
         }
-    } catch (err) {
-        res.status(500).send({ status: 500, error: "Internal Server Error", message: err.message });
+
+        // Update the product post fields
+        updateProduct.name = name || updateProduct.name;
+        updateProduct.description = description || updateProduct.description;
+        updateProduct.price = price || updateProduct.price;
+        updateProduct.stockQuantity = stockQuantity || updateProduct.stockQuantity;
+        updateProduct.idCategory = idCategory || updateProduct.idCategory;
+        updateProduct.image = imagePath;
+
+        // Save the updated product post to the database
+        await updateProduct.save();
+
+        res.status(200).json({
+            message: "product updated successfully",
+            updateProduct,
+        });
+    } catch (error) {
+        if (err.name === 'ValidationError') {
+            const validationErrors = Object.values(err.errors).map((error) => error.message);
+            res.status(400).send({ status: 400, error: "Validation Error", message: validationErrors });
+        } else {
+            res.status(500).send({ status: 500, error: "Internal Server Error", message: err.message });
+        }
     }
 }
 
@@ -154,12 +161,18 @@ export async function update(req, res) {
  * @throws {Object} - Error object with details if an error occurs.
  */
 export async function deleteById(req, res) {
-    const { ID } = req.params
+    const { ID } = req.params;
+
     try {
-        const removeProduct = await productModel.findByIdAndDelete(ID)
+        const removeProduct = await productModel.findByIdAndDelete(ID);
+
         if (!removeProduct) {
             res.status(404).send({ status: 404, error: "Product not found" });
         } else {
+            if (removeProduct.image) {
+                fs.unlinkSync(removeProduct.image);
+            }
+
             res.status(204).send({ status: 204 });
         }
     } catch (err) {

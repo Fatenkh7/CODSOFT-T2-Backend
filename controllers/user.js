@@ -1,6 +1,8 @@
 import userModel from "../models/User.js"
 import bcrypt from "bcryptjs";
-
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+dotenv.config();
 
 /**
  * @description Retrieve all users
@@ -79,6 +81,11 @@ export async function create(req, res) {
             res.status(400).send({ status: 400, message: "Bad request" })
         } else {
             await newUser.save();
+            // Generate a JWT token
+            const token = jwt.sign({ _id: newUser._id }, process.env.USER_TOKEN_SECRET);
+            // Set the token in the Authorization header
+            res.setHeader('Authorization', `Bearer ${token}`);
+
             res.status(201).send({ status: 201, message: "create succeflully", data: newUser })
         }
     } catch (err) {
@@ -192,4 +199,50 @@ export async function deleteById(req, res) {
 }
 
 
-export default { getAll, getById, create, update, deleteById };
+
+/**
+ * @description Authenticate and log in a user
+ * @route POST /api/user/login
+ * @access Public
+ * @param {Object} req.body - The request body containing login information.
+ * @param {string} req.body.email - The email of the user.
+ * @param {string} req.body.password - The password of the user.
+ * @returns {Object} - A success message and an access token if authentication is successful.
+ * @throws {Object} - Error object with details if authentication fails or an error occurs.
+ */
+export async function loginUser(req, res) {
+    try {
+        const { email, password } = req.body;
+        // Find the user by email
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ error: true, message: "User not found" });
+        }
+
+        // Compare the provided password with the hashed password in the database
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: true, message: "Invalid password" });
+        }
+
+        // Generate a JWT token
+        const token = jwt.sign({ _id: user._id }, process.env.USER_TOKEN_SECRET);
+
+        // Set the token in the Authorization header
+        res.setHeader('Authorization', `Bearer ${token}`);
+
+        res.status(200).json({
+            message: "Login successful",
+            user: {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            }
+        })
+    } catch (err) { res.status(500).send({ status: 500, error: "Internal Server Error", message: err.message }); }
+}
+
+export default { getAll, getById, create, update, deleteById, loginUser };

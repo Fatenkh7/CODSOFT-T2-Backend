@@ -10,7 +10,9 @@ import orderModel from "../models/Order.js"
 export async function getAll(req, res) {
 
     try {
-        const orders = await orderModel.find({})
+        const orders = await orderModel.find({}).populate('idUser')
+            .populate('orderItems.idProduct')
+            .exec();
         if (!orders) {
             res.status(404).send({ status: 404, message: "Their is no orders!" })
         } else {
@@ -32,7 +34,8 @@ export async function getAll(req, res) {
 export async function getById(req, res) {
     const { ID } = req.params
     try {
-        const getOrder = await orderModel.findById({ _id: ID })
+        const getOrder = await orderModel.findById({ _id: ID }).populate('idUser')
+            .populate('orderItems.idProduct')
         if (!getOrder) {
             res.status(404).send({ status: 404, message: "order not found!" })
         } else {

@@ -11,7 +11,8 @@ import * as fs from 'fs';
 export async function getAll(req, res) {
 
     try {
-        const product = await productModel.find({})
+        const product = await productModel.find({}).populate('idCategory')
+            .exec();
         if (!product) {
             res.status(404).send({ status: 404, message: "Their is no products!" })
         } else {
@@ -33,7 +34,7 @@ export async function getAll(req, res) {
 export async function getById(req, res) {
     const { ID } = req.params
     try {
-        const getProduct = await productModel.findById({ _id: ID })
+        const getProduct = await productModel.findById({ _id: ID }).populate('idCategory')
         if (!getProduct) {
             res.status(404).send({ status: 404, message: "Product not found!" })
         } else {

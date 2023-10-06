@@ -4,7 +4,7 @@ const router = express.Router();
 import userAuth from "../middleware/userAuth.js"
 
 router.get("/", getAll)
-router.get("/:ID", getById)
+router.get("/:ID", userAuth, getById)
 router.post("/add", userAuth, create)
 router.put("/:ID", userAuth, update)
 router.delete("/:ID", deleteById)

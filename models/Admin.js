@@ -45,6 +45,10 @@ const AdminSchema = new Schema(
             trim: true,
             match: [/^[0-9\s+-]*$/, "Please fill a valid phone number"],
         },
+        role: {
+            type: String,
+            default: "admin",
+        }
 
     },
     {

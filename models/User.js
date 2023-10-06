@@ -47,6 +47,10 @@ const UserSchema = new Schema(
             required: [true, "Please enter your address"],
             trim: true,
         },
+        role: {
+            type: String,
+            default: "user",
+        }
     },
     {
         collection: "User",

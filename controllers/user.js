@@ -2,6 +2,7 @@ import userModel from "../models/User.js"
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import session from "express-session";
 dotenv.config();
 
 /**
@@ -80,11 +81,15 @@ export async function create(req, res) {
         if (!newUser) {
             res.status(400).send({ status: 400, message: "Bad request" })
         } else {
+            newUser.password = await bcrypt.hash(password, 10);
             await newUser.save();
-            // Generate a JWT token
-            const token = jwt.sign({ _id: newUser._id }, process.env.USER_TOKEN_SECRET);
-            // Set the token in the Authorization header
-            res.setHeader('Authorization', `Bearer ${token}`);
+
+            // Set user data in the session
+            req.session.user = {
+                _id: newUser._id,
+                role: newUser.role,
+                // Add other user data as needed
+            };
 
             res.status(201).send({ status: 201, message: "create succeflully", data: newUser })
         }
@@ -114,6 +119,8 @@ export async function create(req, res) {
         }
     }
 }
+
+
 
 /**
  * @description Update a user by ID
@@ -227,11 +234,12 @@ export async function loginUser(req, res) {
             return res.status(401).json({ error: true, message: "Invalid password" });
         }
 
-        // Generate a JWT token
-        const token = jwt.sign({ _id: user._id }, process.env.USER_TOKEN_SECRET);
-
-        // Set the token in the Authorization header
-        res.setHeader('Authorization', `Bearer ${token}`);
+        // Set user data in the session
+        req.session.user = {
+            _id: user._id,
+            role: user.role,
+            // Add other user data as needed
+        };
 
         res.status(200).json({
             message: "Login successful",
@@ -240,8 +248,9 @@ export async function loginUser(req, res) {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-            }
-        })
+                role: user.role,
+            },
+        });
     } catch (err) { res.status(500).send({ status: 500, error: "Internal Server Error", message: err.message }); }
 }
 
